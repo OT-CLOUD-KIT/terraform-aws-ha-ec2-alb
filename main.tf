@@ -38,6 +38,15 @@ resource "aws_launch_template" "launch_template" {
   instance_type               = var.instance_type
   key_name                    = var.instance_key_name
   vpc_security_group_ids      = var.security_groups
+
+  dynamic network_interfaces {
+    for_each = var.network_interfaces
+    content {
+      associate_public_ip_address    = network_interfaces.value.associate_public_ip_address
+      ipv6_address_count = network_interfaces.value.ipv6_address_count
+    }
+  }
+  
   block_device_mappings {
     device_name = var.device_name
         ebs {
